@@ -89,8 +89,8 @@ if __name__ == '__main__':
         with torch.set_grad_enabled(True):
             model.train()
             for batch_idx, (x, y) in enumerate(train_loader):
-
-                x_hat, z, mu, log_sigma = model.forward(x.to(device))
+                x = x.to(device)
+                x_hat, z, mu, log_sigma = model.forward(x)
                 loss, rec_loss, kl_div = model.loss_function(x, x_hat, mu, log_sigma)
 
                 model.zero_grad()
