@@ -122,7 +122,7 @@ if __name__ == '__main__':
             win="win:train-{}-{}".format("VAE", EXP_NAME))
 
 
-        if epoch % 20 == 0 :
+        if epoch % 100 == 0 :
             model.to("cpu")
             save_checkpoint({
                 'epoch': epoch,
