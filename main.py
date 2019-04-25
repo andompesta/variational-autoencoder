@@ -19,7 +19,7 @@ HIDDEN_DIM = 256
 Z_DIM = 128
 LR = 0.0001
 INPUT_DIM = 784
-EPOCHS = 100
+EPOCHS = 5000
 
 vis = visdom.Visdom(port=8097)
 now = datetime.now()
