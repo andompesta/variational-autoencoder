@@ -35,7 +35,7 @@ class VariationalAutoencoder(torch.nn.Module):
         self.device = device
         self.std_normal_dist = torch.distributions.multivariate_normal.MultivariateNormal(torch.zeros(z_dim),
                                                                                           torch.eye(z_dim),
-                                                                                          device=self.device)
+                                                                                          )
         # self.x_dist = torch.distributions.bernoulli.Bernoulli()
 
     def forward(self, x):
@@ -47,7 +47,7 @@ class VariationalAutoencoder(torch.nn.Module):
         params = self.encoder_net(x)
         mu, log_sigma = torch.chunk(params, 2, dim=-1)
 
-        std_normal_sample = self.std_normal_dist.sample_n(batch_size)
+        std_normal_sample = self.std_normal_dist.sample((batch_size,)).to(self.device)
 
         z = mu + (torch.exp(log_sigma) * std_normal_sample)
 

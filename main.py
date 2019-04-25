@@ -13,7 +13,7 @@ ROOT = './data'
 if not os.path.exists(ROOT):
     os.mkdir(ROOT)
 
-DEVICE = "cuda:0"
+DEVICE = "cpu"
 BATCH_SIZE = 64
 HIDDEN_DIM = 256
 Z_DIM = 128
