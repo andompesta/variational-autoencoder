@@ -13,6 +13,7 @@ ROOT = './data'
 if not os.path.exists(ROOT):
     os.mkdir(ROOT)
 
+DEVICE = "cuda:0"
 BATCH_SIZE = 64
 HIDDEN_DIM = 256
 Z_DIM = 128
@@ -78,17 +79,19 @@ if __name__ == '__main__':
     optimizer = torch.optim.Adam(model.parameters(), lr=LR)
 
     training_loss = []
+    training_rec_loss = []
+    training_kl_loss = []
 
     for epoch in range(EPOCHS):
         epoch_loss = []
-        epoch_z = []
-        epoch_y = []
+        epoch_rec = []
+        epoch_kl = []
         with torch.set_grad_enabled(True):
             model.train()
             for batch_idx, (x, y) in enumerate(train_loader):
 
                 x_hat, z, mu, log_sigma = model.forward(x)
-                loss = model.loss_function(x, x_hat, mu, log_sigma)
+                loss, rec_loss, kl_div = model.loss_function(x, x_hat, mu, log_sigma)
 
                 model.zero_grad()
                 loss.backward()
@@ -96,30 +99,37 @@ if __name__ == '__main__':
                 optimizer.step()
 
                 epoch_loss.append(loss.item())
-                epoch_z.extend(z.detach().cpu().numpy().tolist())
-                epoch_y.extend(y.detach().cpu().numpy().tolist())
+                epoch_rec.append(rec_loss.item())
+                epoch_kl.append(kl_div.item())
 
-        iter_loss = np.mean(epoch_loss)
+        epoch_loss = np.mean(epoch_loss)
+        epoch_rec = np.mean(epoch_rec)
+        epoch_kl = np.mean(epoch_kl)
+
         training_loss.append(np.mean(epoch_loss))
-        print("iter: {} \t loss: {}".format(epoch, iter_loss))
+        training_rec_loss.append(epoch_rec)
+        training_kl_loss.append(epoch_kl)
+
+        print("iter: {} \t loss: {}".format(epoch, epoch_loss))
 
         vis.line(
-            Y=np.array(training_loss),
+            Y=np.column_stack([training_loss, training_rec_loss, training_kl_loss]),
             X=np.array(range(0, epoch + 1)),
             opts=dict(
-                legend=["loss"],
+                legend=["loss", "rec", "kl"],
                 title="training loss",
                 showlegend=True),
             win="win:train-{}-{}".format("VAE", EXP_NAME))
 
 
         if epoch % 20 == 0 :
+            model.to("cpu")
             save_checkpoint({
                 'epoch': epoch,
-                'state_dict': model.state_dict(),
-                'optimizer': optimizer.state_dict()
+                'state_dict': model.state_dict()
             }, True,
                 path=os.path.join(ROOT, model.name),
                 filename="checkpoint{}.pth.tar".format(epoch),
-                version=0
+                version="0"
             )
+            model.to(device)
