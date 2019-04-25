@@ -70,7 +70,7 @@ if __name__ == '__main__':
         batch_size=BATCH_SIZE,
         shuffle=False)
 
-    device = torch.device("cpu")
+    device = torch.device(DEVICE)
 
     model = VariationalAutoencoder(INPUT_DIM, HIDDEN_DIM, Z_DIM, device)
     model.to(device)
@@ -90,7 +90,7 @@ if __name__ == '__main__':
             model.train()
             for batch_idx, (x, y) in enumerate(train_loader):
 
-                x_hat, z, mu, log_sigma = model.forward(x)
+                x_hat, z, mu, log_sigma = model.forward(x.to(device))
                 loss, rec_loss, kl_div = model.loss_function(x, x_hat, mu, log_sigma)
 
                 model.zero_grad()
