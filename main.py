@@ -1,9 +1,7 @@
+from helper import *
 import os
 import torch
-import torch.nn as nn
-import torchvision.datasets as dset
 import torchvision.transforms as transforms
-import shutil
 from models import VariationalAutoencoder
 import visdom
 from datetime import datetime
@@ -26,49 +24,16 @@ now = datetime.now()
 EXP_NAME = "exp-{}".format(now)
 
 
-class Flatten(object):
-    def __init__(self, size):
-        self.size = size
-
-    def __call__(self, sample):
-        return sample.view(1, -1).squeeze()
-
-def load_dataset(root, transformation, download=True):
-
-    # if not exist, download mnist dataset
-    train_set = dset.MNIST(root=root, train=True, transform=transformation, download=download)
-    test_set = dset.MNIST(root=root, train=False, transform=transformation, download=download)
-
-    return train_set, test_set
-
-def save_checkpoint(state, is_best, path, filename='checkpoint.pth.tar', version=0):
-    torch.save(state, ensure_dir(os.path.join(path, version, filename)))
-    if is_best:
-        shutil.copyfile(os.path.join(path, version, filename), os.path.join(path, str(version), 'model_best.pth.tar'))
-
-def ensure_dir(file_path):
-    '''
-    Used to ensure the creation of a directory when needed
-    :param file_path: path to the file that we want to create
-    '''
-    directory = os.path.dirname(file_path)
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    return file_path
-
 
 if __name__ == '__main__':
-    trans = transforms.Compose([transforms.ToTensor(), Flatten(INPUT_DIM)])
+    trans = transforms.Compose([transforms.ToTensor(), Round(), Flatten(INPUT_DIM)])
     train_set, test_set = load_dataset(ROOT, trans)
 
     train_loader = torch.utils.data.DataLoader(
         dataset=train_set,
         batch_size=BATCH_SIZE,
         shuffle=True)
-    test_loader = torch.utils.data.DataLoader(
-        dataset=test_set,
-        batch_size=BATCH_SIZE,
-        shuffle=False)
+
 
     device = torch.device(DEVICE)
 
@@ -90,8 +55,8 @@ if __name__ == '__main__':
             model.train()
             for batch_idx, (x, y) in enumerate(train_loader):
                 x = x.to(device)
-                x_hat, z, mu, log_sigma = model.forward(x)
-                loss, rec_loss, kl_div = model.loss_function(x, x_hat, mu, log_sigma)
+                x_hat, p_x_given_z_logits, z, mu, log_sigma = model.forward(x)
+                loss, rec_loss, kl_div = model.loss_function(x, p_x_given_z_logits, mu, log_sigma)
 
                 model.zero_grad()
                 loss.backward()

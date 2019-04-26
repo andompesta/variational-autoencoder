@@ -1,5 +1,6 @@
 import torch
 from torch import nn
+import numpy as np
 from torch import functional as F
 
 class VariationalAutoencoder(torch.nn.Module):
@@ -29,7 +30,7 @@ class VariationalAutoencoder(torch.nn.Module):
             nn.Linear(z_dim, hidden_dim),
             nn.ReLU(),
             nn.Linear(hidden_dim, input_dim),
-            nn.Sigmoid()      # it is similar to a bernoulli prob distribution
+            # nn.Sigmoid()      # it is similar to a bernoulli prob distribution
         )
 
         self.device = device
@@ -37,6 +38,14 @@ class VariationalAutoencoder(torch.nn.Module):
                                                                                           torch.eye(z_dim),
                                                                                           )
         # self.x_dist = torch.distributions.bernoulli.Bernoulli()
+
+
+    def sample_from_prior(self, z_sample):
+        batch_size, _ = z_sample.size()
+        p_x_given_z_prior_logits = self.decoder_net(z_sample)
+        p_x_given_z_sample = torch.distributions.bernoulli.Bernoulli(logits=p_x_given_z_prior_logits).sample()
+        return p_x_given_z_sample
+
 
     def forward(self, x):
         """
@@ -51,18 +60,22 @@ class VariationalAutoencoder(torch.nn.Module):
 
         z = mu + (torch.exp(log_sigma) * std_normal_sample)
 
-        x_hat = self.decoder_net(z)
+        p_x_given_z_logits = self.decoder_net(z)
+        p_x_given_z = torch.sigmoid(p_x_given_z_logits)
+        x_hat = torch.bernoulli(p_x_given_z)
 
+        # print(np.unique(x.detach().cpu().numpy()))
+        # print(np.unique(x_hat.detach().cpu().numpy()))
 
-        return x_hat, z, mu, log_sigma
+        return x_hat, p_x_given_z_logits, z, mu, log_sigma
 
-    def loss_function(self, x, x_hat, mu, log_sigma):
+    def loss_function(self, x, p_x_given_z_logits, mu, log_sigma):
         """
         Not sure on how to sample the negative edges (they should be the anomalous edges).
         Potentialy using the penalty weight should work well. However, just ry to minimise the neg-log likelihood
         :return:
         """
-        rec_loss = nn.functional.binary_cross_entropy(x_hat, x, reduction="none").sum(dim=1)
+        rec_loss = nn.functional.binary_cross_entropy_with_logits(p_x_given_z_logits, x, reduction="none").sum(dim=1)
         kl_loss = 0.5 * torch.sum(torch.exp(log_sigma) + mu**2 - log_sigma - 1., dim=1)
 
         return torch.mean(rec_loss + kl_loss), rec_loss.mean(), kl_loss.mean()
