@@ -3,6 +3,7 @@ import torch
 import shutil
 import os
 import numpy as np
+
 class Flatten(object):
     def __init__(self, size):
         self.size = size
