@@ -62,7 +62,6 @@ if __name__ == '__main__':
 
                 loss, rec_loss, kl_div = model.loss_function(x, p_x_given_z_logits, mu, log_sigma)
                 # loss, rec_loss, kl_div = model.loss_function(x, x_hat, mu, log_sigma)
-
                 model.zero_grad()
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(model.parameters(), 30.)
