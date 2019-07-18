@@ -70,7 +70,7 @@ In Variational Autoencoder we define ![equation](https://latex.codecogs.com/gif.
 
 ## Results
 Based on the code, we have trained a CNN-based Variational Autoencoder on the MNIST dataset.
-[Fig.1](loss) report the training loss, while Fig. 2 shows us some generated example.
+[Fig.1](#loss) report the training loss, while [Fig.2](#new-example) shows us some generated example.
 As it is possible to see, there are still some artifact. Maybe a better activation function would provide better results.
 
 <p align="center">
