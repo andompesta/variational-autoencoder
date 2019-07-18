@@ -62,4 +62,10 @@ The advantage is the variational lower bound  is tractable.
 
 ![equation](https://latex.codecogs.com/gif.latex?%5Csum_z%20q%28z%7Cx_i%29%20%5Clog%20%5Cfrac%7Bp%28x_i%2Cz%29%7D%7Bq%28z%7Cx_i%29%7D%20%3D%20%5Csum_z%20q%28z%7Cx_i%29%20%5Clog%20%5Cfrac%7Bp%28x_i%7Cz%29%20p%28z%29%7D%7Bq%28z%7Cx_i%29%7D)
 
-![equation](https://latex.codecogs.com/gif.latex?%5Csum_z%20q%28z%7Cx_i%29%20%5Clog%20%5Cfrac%7Bp%28x_i%2Cz%29%7D%7Bq%28z%7Cx_i%29%7D%20%3D%20%5Csum_z%20q%28z%7Cx_i%29%20%5Clog%20%5Cfrac%7Bp%28x_i%7Cz%29%20p%28z%29%7D%7Bq%28z%7Cx_i%29%7D)
+![equation](https://latex.codecogs.com/gif.latex?%3D%20%5Csum_z%20q%28z%7Cx_i%29%20%5CBig%28%20%5Clog%20p%28x_i%7Cz%29%20&plus;%20%5Clog%20%5Cfrac%7Bp%28z%29%7D%7Bq%28z%7Cx_i%29%7D%5CBig%29%20%3D%20%5Csum_z%20q%28z%7Cx_i%29%20%5Clog%20p%28x_i%7Cz%29%20&plus;%20%5Csum_z%20q%28z%7Cx_i%29%20%5Clog%20%5Cfrac%7Bp%28z%29%7D%7Bq%28z%7Cx_i%29%7D)
+
+![equation](https://latex.codecogs.com/gif.latex?%3D%20%5Cmathbb%7BE%7D_%7Bz%20%5Csim%20q%28z%7Cx_i%29%7D%20%5Cbig%5B%20%5Clog%20p%28x_i%7Cz%29%20%5Cbig%5D%20-%20KL%20%5Cbig%28q%28z%7Cx_i%29%7C%7Cp%28z%7Cx_i%29%5Cbig%29)
+
+In Variational Autoencoder we define ![equation](https://latex.codecogs.com/gif.latex?q%28z%7Cx_i%29) and ![equation](https://latex.codecogs.com/gif.latex?p%28z%7Cx_i%29) as neural networks; moreover, we assume ![equation](https://latex.codecogs.com/gif.latex?p%28z%29) to be a normal Gaussian distribution with unit variance and zero mean.
+The KL divergence impose 
+ to be Gaussian distributed. Thus, we have a closed form for the KL divergence:
