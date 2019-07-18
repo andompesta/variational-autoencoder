@@ -49,4 +49,17 @@ Formally, we can rewrite our goal as: ![equation](https://latex.codecogs.com/gif
 
 ![equation](https://latex.codecogs.com/gif.latex?%3D%20-%20%5Csum_%7Bx_i%20%5Cin%20X%7D%20q%28z%7Cx_i%29%20%5CBig%28%20%5Clog%20%5Cfrac%7Bp%28x_i%2Cz%29%7D%7Bq%28z%7Cx_i%29%7D%20-%20%5Clog%20p%28x_i%29%20%5CBig%29)
 
-![equation](https://latex.codecogs.com/gif.latex?%3D%20-%20%5Csum_%7Bx_i%20%5Cin%20X%7D%20q%28z%7Cx_i%29%20%5Clog%20%5Cfrac%7Bp%28x_i%2Cz%29%7D%7Bq%28z%7Cx_i%29%7D%20&plus;%20%5Csum_%7Bx_i%20%5Cin%20X%7D%20q%28z%7Cx_i%29%20%5Clog%20p%28x_i%29). note that ![equation](https://latex.codecogs.com/gif.latex?%5Clarge%20p%28x_i%29) has no relation with the latent variable z. Similarly, ![equation](https://latex.codecogs.com/gif.latex?%5Csum_%7Bx_i%20%5Cin%20X%7D%20q%28z%7Cx_i%29%20%3D%201) because ![equation](https://latex.codecogs.com/gif.latex?x_i) is given.
+![equation](https://latex.codecogs.com/gif.latex?%3D%20-%20%5Csum_%7Bx_i%20%5Cin%20X%7D%20q%28z%7Cx_i%29%20%5Clog%20%5Cfrac%7Bp%28x_i%2Cz%29%7D%7Bq%28z%7Cx_i%29%7D%20&plus;%20%5Csum_%7Bx_i%20%5Cin%20X%7D%20q%28z%7Cx_i%29%20%5Clog%20p%28x_i%29). 
+
+Note that ![equation](https://latex.codecogs.com/gif.latex?%5Clarge%20p%28x_i%29) has no relation with the latent variable z. Similarly, ![equation](https://latex.codecogs.com/gif.latex?%5Csum_%7Bx_i%20%5Cin%20X%7D%20q%28z%7Cx_i%29%20%3D%201) because ![equation](https://latex.codecogs.com/gif.latex?x_i) is given.
+
+![equation](https://latex.codecogs.com/gif.latex?%3D%20%5Clog%20p%28x_i%29%20-%20%5Csum_%7Bz%7D%20q%28z%7Cx_i%29%20%5Clog%20%5Cfrac%7Bp%28x_i%2C%20z%29%7D%7Bq%28z%7Cx_i%29%7D)
+
+![equation](https://latex.codecogs.com/gif.latex?%5Clog%20p%28x_i%29%20%3D%20KL%28q%28z%7Cx_i%29%7C%7Cp%28z%7Cx_i%29%29%20&plus;%20%5Csum_%7Bz%7D%20q%28z%7Cx_i%29%20%5Clog%20%5Cfrac%7Bp%28x_i%2C%20z%29%7D%7Bq%28z%7Cx_i%29%7D)
+
+Note that ![equation](https://latex.codecogs.com/gif.latex?%5Clog%20p%28x_i%29) is a constant since ![equation](https://latex.codecogs.com/gif.latex?%5Clarge%20x_i) is given. Also, note that ![equation](https://latex.codecogs.com/gif.latex?KL%28q%28z%7Cx_i%29%7C%7Cp%28z%7Cx_i%29%29) was the quantity I wanted to minimise. Thus, **minimising the KL divergence is equal to maximise ![equation](https://latex.codecogs.com/gif.latex?%5Csum_z%20q%28z%7Cx_i%29%20%5Clog%20%5Cfrac%7Bp%28x_i%2Cz%29%7D%7Bq%28z%7Cx_i%29%7D) (Variational lower bound) up to a constant value.** 
+The advantage is the variational lower bound  is tractable.
+
+![equation](https://latex.codecogs.com/gif.latex?%5Csum_z%20q%28z%7Cx_i%29%20%5Clog%20%5Cfrac%7Bp%28x_i%2Cz%29%7D%7Bq%28z%7Cx_i%29%7D%20%3D%20%5Csum_z%20q%28z%7Cx_i%29%20%5Clog%20%5Cfrac%7Bp%28x_i%7Cz%29%20p%28z%29%7D%7Bq%28z%7Cx_i%29%7D)
+
+![equation](https://latex.codecogs.com/gif.latex?%5Csum_z%20q%28z%7Cx_i%29%20%5Clog%20%5Cfrac%7Bp%28x_i%2Cz%29%7D%7Bq%28z%7Cx_i%29%7D%20%3D%20%5Csum_z%20q%28z%7Cx_i%29%20%5Clog%20%5Cfrac%7Bp%28x_i%7Cz%29%20p%28z%29%7D%7Bq%28z%7Cx_i%29%7D)
