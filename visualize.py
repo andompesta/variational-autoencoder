@@ -5,7 +5,7 @@ import torch.nn as nn
 import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import shutil
-from models import VariationalAutoencoder
+from models import VariationalAutoencoder, CNNVariationalAutoencoder
 import plotly.plotly as py
 import plotly.graph_objs as go
 
@@ -16,7 +16,7 @@ import numpy as np
 
 
 ROOT = './data'
-MODEL = "VariationalAutoencoder"
+MODEL = "CNNVariationalAutoencoder"
 VERSION = "0"
 
 DEVICE = "cpu"
@@ -93,11 +93,13 @@ def plot_hidden(data, labels):
     py.plot(fig, filename='variational-autoencoder-latent-space')
 
 if __name__ == '__main__':
-    trans = transforms.Compose([transforms.ToTensor(), Round(), Flatten(INPUT_DIM)])
+    # trans = transforms.Compose([transforms.ToTensor(), Round(), Flatten(INPUT_DIM)])
+    trans = transforms.Compose([transforms.ToTensor(), Round()])
     device = torch.device(DEVICE)
 
-    model = VariationalAutoencoder(INPUT_DIM, HIDDEN_DIM, Z_DIM, device)
-    checkpoint = torch.load(os.path.join(ROOT, MODEL, VERSION, "checkpoint500.pth.tar"))
+    # model = VariationalAutoencoder(INPUT_DIM, HIDDEN_DIM, Z_DIM, device)
+    model = CNNVariationalAutoencoder(device=device)
+    checkpoint = torch.load(os.path.join(ROOT, MODEL, VERSION, "CNN_checkpoint4530.pth.tar"))
     model.load_state_dict(checkpoint['state_dict'])
     model.to(device)
     train_set, test_set = load_dataset(ROOT, trans)

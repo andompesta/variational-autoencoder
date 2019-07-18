@@ -4,12 +4,12 @@ import numpy as np
 import torch.nn.functional as F
 
 class CNNVariationalAutoencoder(nn.Module):
-    def __init__(self, image_channels=1, output_channels=[32, 64, 128, 256],  h_dim=512, z_dim=32, device=torch.device("cpu")):
+    def __init__(self, image_channels=1, output_channels=[16, 32, 64],  h_dim=256, z_dim=32, device=torch.device("cpu")):
         super(CNNVariationalAutoencoder, self).__init__()
         self.name = "CNNVariationalAutoencoder"
 
         assert isinstance(output_channels, list)
-        assert len(output_channels) == 4
+        assert len(output_channels) == 3
 
         self.hidden_dim = h_dim
         self.latent_dim = z_dim
@@ -19,18 +19,14 @@ class CNNVariationalAutoencoder(nn.Module):
                                                                                           torch.eye(z_dim),
                                                                                           )
         self.encoder = nn.Sequential(
-            nn.Conv2d(image_channels, output_channels[0], kernel_size=3, stride=2),
+            nn.Conv2d(image_channels, output_channels[0], kernel_size=(6, 6), stride=(2, 2), bias=False),
             nn.BatchNorm2d(output_channels[0]),
-            nn.ReLU(),
-            nn.Conv2d(output_channels[0], output_channels[1], kernel_size=3, stride=2),
+            nn.ELU(),
+            nn.Conv2d(output_channels[0], output_channels[1], kernel_size=(4, 4), stride=2, bias=False),
             nn.BatchNorm2d(output_channels[1]),
-            nn.ReLU(),
-            nn.Conv2d(output_channels[1], output_channels[2], kernel_size=3, stride=2),
-            nn.BatchNorm2d(output_channels[2]),
-            nn.ReLU(),
-            # nn.Conv2d(output_channels[2], output_channels[3], kernel_size=4, stride=2),
-            # nn.BatchNorm2d(output_channels[3]),
-            # nn.ReLU()
+            nn.ELU(),
+            nn.Conv2d(output_channels[1], output_channels[2], kernel_size=2, stride=2),
+            nn.ELU()
         )
 
         self.fc1 = nn.Linear(h_dim, z_dim)
@@ -38,13 +34,13 @@ class CNNVariationalAutoencoder(nn.Module):
         self.fc3 = nn.Linear(z_dim, h_dim)
 
         self.decoder = nn.Sequential(
-            # nn.ConvTranspose2d(h_dim, output_channels[2], kernel_size=5, stride=2),
-            # nn.ReLU(),
-            nn.ConvTranspose2d(h_dim, output_channels[1], kernel_size=5, stride=2),
-            nn.ReLU(),
-            nn.ConvTranspose2d(output_channels[1], output_channels[0], kernel_size=5, stride=2),
-            nn.ReLU(),
-            nn.ConvTranspose2d(output_channels[0], image_channels, kernel_size=4, stride=2)
+            nn.ConvTranspose2d(output_channels[2], output_channels[1], kernel_size=(2, 2), stride=(2, 2), padding=0, bias=False),
+            nn.BatchNorm2d(output_channels[1]),
+            nn.ELU(),
+            nn.ConvTranspose2d(output_channels[1], output_channels[0], kernel_size=4, stride=3, padding=1, bias=False),
+            nn.BatchNorm2d(output_channels[0]),
+            nn.ELU(),
+            nn.ConvTranspose2d(output_channels[0], 1, kernel_size=6, stride=3, padding=4)
         )
 
 
@@ -55,7 +51,7 @@ class CNNVariationalAutoencoder(nn.Module):
         if size == None:
             size = self.hidden_dim
 
-        return x.view(x.size(0), size, 1, 1)
+        return x.view(x.size(0), -1, 2, 2)
 
 
     def sample_from_prior(self, z_sample):
@@ -103,7 +99,7 @@ class CNNVariationalAutoencoder(nn.Module):
         rec_loss = nn.functional.binary_cross_entropy_with_logits(x_hat_logit, x, size_average=False)
         kl_loss = -0.5 * torch.sum(1 + log_sigma - mu.pow(2) - log_sigma.exp())
 
-        return rec_loss + (5 * kl_loss), rec_loss, kl_loss
+        return rec_loss + (kl_loss), rec_loss, kl_loss
 
     def reset_parameters(self):
         """
