@@ -32,15 +32,15 @@ Note that: ![equation](https://latex.codecogs.com/gif.latex?%5Clarge%20KL%28%5Cc
 
 
 In Variational Autoencoder we are interested in generating new data; thus we are interested in the posterior distribution ![equation](https://latex.codecogs.com/gif.latex?%5Clarge%20p%28z%7Cx_i%29). 
-Assuming to know the such posterior, we can infer our latent variable distribution ![equation](https://latex.codecogs.com/gif.
-latex?%5Clarge%20p%28z%29) by marginalisation over our dataset. 
+Assuming to know the such posterior, we can infer our latent variable distribution ![equation](https://latex.codecogs.com/gif.latex?%5Clarge%20p%28z%29) by marginalisation over our dataset. 
 his make a lot of sense if we think about it: we want to make our latent variable likely under our data so to generate  plausible data. 
 
 According to Bayesian theory: ![equation](https://latex.codecogs.com/gif.latex?%5Clarge%20p%28z%7Cx_i%29%20%3D%20%5Cfrac%7Bp%28x_i%7Cz%29%20p%28z%29%7D%7Bp%28x_i%29%7D%20%3D%20%5Cfrac%7Bp%28x_i%2C%20z%29%7D%7Bp%28x_i%29%7D).
 However, computing ![equation](https://latex.codecogs.com/gif.latex?%5Clarge%20p%28x_i%29) is complicated, since: ![equation](https://latex.codecogs.com/gif.latex?%5Clarge%20p%28x_i%29%20%3D%20%5Cint%20p%28x_i%7Cz%29%20p%28z%29%20%5Cmathrm%7Bd%7Dz) is a marginal distribution which is intractable. If z is high dimensional,  we have to marginalise on all latent variables: ![equation](https://latex.codecogs.com/gif.latex?p%28x_i%29%20%3D%20%5Cint%20...%5Cint%20%5Cint%20p%28x_i%7Cz%29%20p%28z%29%20%5Cmathrm%7Bd%7Dz).
 
 
-In variational inference we **approximate ![equation](https://latex.codecogs.com/gif.latex?p%28z%7Cx_i%29) by an other distribution ![equation](https://latex.codecogs.com/gif.latex?q%28z%7Cx_i%29)**. The idea is to give at ![equation](![equation](https://latex.codecogs.com/gif.latex?q%28z%7Cx_i%29)) a tractable form (Gaussian exponential) and "play" with the parameters of 
+In variational inference we **approximate ![equation](https://latex.codecogs.com/gif.latex?p%28z%7Cx_i%29) by an other distribution ![equation](https://latex.codecogs.com/gif.latex?q%28z%7Cx_i%29)**. 
+The intuition is to give at ![equation](https://latex.codecogs.com/gif.latex?q%28z%7Cx_i%29) a tractable form (Gaussian exponential) and "play" with the parameters of 
  so to match ![equation](https://latex.codecogs.com/gif.latex?p%28z%7Cx_i%29). 
 
 Formally, we can rewrite our goal as: ![equation](https://latex.codecogs.com/gif.latex?%5Cmin%20KL%28q%28z%7Cx_i%29%7C%7Cp%28z%7Cx_i%29%29%20%3D%20-%20%5Csum_%7Bx_i%20%5Cin%20X%7D%20q%28z%7Cx_i%29%20%5Clog%20%5Cfrac%7Bp%28z%7Cx_i%29%7D%7Bq%28z%7Cx_i%29%7D)
@@ -67,5 +67,20 @@ The advantage is the variational lower bound  is tractable.
 ![equation](https://latex.codecogs.com/gif.latex?%3D%20%5Cmathbb%7BE%7D_%7Bz%20%5Csim%20q%28z%7Cx_i%29%7D%20%5Cbig%5B%20%5Clog%20p%28x_i%7Cz%29%20%5Cbig%5D%20-%20KL%20%5Cbig%28q%28z%7Cx_i%29%7C%7Cp%28z%7Cx_i%29%5Cbig%29)
 
 In Variational Autoencoder we define ![equation](https://latex.codecogs.com/gif.latex?q%28z%7Cx_i%29) and ![equation](https://latex.codecogs.com/gif.latex?p%28z%7Cx_i%29) as neural networks; moreover, we assume ![equation](https://latex.codecogs.com/gif.latex?p%28z%29) to be a normal Gaussian distribution with unit variance and zero mean.
-The KL divergence impose 
- to be Gaussian distributed. Thus, we have a closed form for the KL divergence:
+
+## Results
+Based on the code, we have trained a CNN-based Variational Autoencoder on the MNIST dataset.
+[Fig.1](loss) report the training loss, while Fig. 2 shows us some generated example.
+As it is possible to see, there are still some artifact. Maybe a better activation function would provide better results.
+
+<p align="center">
+  <img src="figures/cnn/loss.png" width="600" title="loss">
+  
+  <a name=loss>Fig.1 - Training loss </a>
+</p>
+
+<p align="center">
+  <img src="figures/cnn/cnn_variational_autoencoder_pred.png" width="650" title="new-examples">
+  
+  <a name=new-example>Fig.2 - Generated examples</a>
+</p>
