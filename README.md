@@ -25,7 +25,7 @@ Let use define some notation:
 
 
 In variational Inference we resort to some information theory concepts: 
-1. **Information** associated to an event is quantified as: ![equation](https://latex.codec1ogs.com/gif.latex?%5Clarge%20I%28x_i%29%20%3D%20-%20%5Clog%20p%28x_i%29)
+1. **Information** associated to an event is quantified as: ![equation](https://latex.codecogs.com/gif.latex?%5Clarge%20I%28x_i%29%20%3D%20-%5Clog%20p%28x_i%29)
 2. **Entropy** is known as the average information, or the expectation of the information: ![equation](https://latex.codecogs.com/gif.latex?%5Clarge%20H%28X%29%20%3D%20%5Csum_%7Bx_i%20%5Cin%20X%7D%20p%28x_i%29%20%5Clog%20p%28x_i%29%20%7E%5Ctext%7B%20or%20%7D%7E%20%5Cint_%7Bx_i%20%5Cin%20X%7D%20p%28x_i%29%20%5Clog%20p%28x_i%29%20%5Cmathrm%7Bd%7Dx_i)
 3. **KL divergence** is a measure of dissimilarity of one distribution w.r.t. an other distribution: ![equation](https://latex.codecogs.com/gif.latex?%5Clarge%20KL%28p%28X%29%7C%7Cq%28X%29%29%20%3D%20%5Csum_%7Bx_i%20%5Cin%20X%7D%20p%28x_i%29%20%5Clog%20%5Cfrac%7Bq%28x_i%29%7D%7Bp%28x_i%29%7D%20%7E%5Ctext%7B%20or%20%7D%7E%20%5Cint_%7Bx_i%20%5Cin%20X%7D%20p%28x_i%29%20%5Clog%20%5Cfrac%7Bq%28x_i%29%7D%7Bp%28x_i%29%7D%20%5Cmathrm%7Bd%7Dx_i)
 Note that: ![equation](https://latex.codecogs.com/gif.latex?%5Clarge%20KL%28%5Ccdot%7C%7C%5Ccdot%29%20%5Cge%200) and ![equation](https://latex.codecogs.com/gif.latex?%5Clarge%20KL%28p%28X%29%7C%7Cq%28X%29%29%20%5Cne%20KL%28q%28X%29%7C%7Cp%28X%29%29)
